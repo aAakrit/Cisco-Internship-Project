@@ -1,0 +1,13 @@
+
+{% for alert in alerts %}
+  <div class="card mb-3">
+    <div class="card-header bg-warning text-white">
+      <strong>{{ alert.device.name }} - {{ alert.type }}</strong> - {{ alert.timestamp }}
+    </div>
+    <div class="card-body">
+      <p class="card-text">{{ alert.details }}</p>
+    </div>
+  </div>
+{% empty %}
+  <p>No alerts found.</p>
+{% endfor %}

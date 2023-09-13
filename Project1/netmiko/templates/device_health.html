@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+  <h1 class="mt-5">Device Health</h1>
+  <ul class="list-group">
+    {% for device in devices %}
+      <li class="list-group-item">
+        <a class="text-decoration-none" href="{% url 'netmiko:device_detail' device_id=device.id %}">
+            {{ device.name }} - {{ device.ip_address }} - {{ device.platform }} - Status: {{ device.status }}
+        {% if device.cpu_usage %}
+            - CPU Usage: {{ device.cpu_usage }}%
+        {% endif %}
+        {% if device.memory_usage %}
+            - Memory Usage: {{ device.memory_usage }}%
+        {% endif %}
+        {% if device.interface_status %}
+            - Interface Status: Up
+        {% else %}
+            - Interface Status: Down
+        {% endif %}
+        </a>
+      </li>
+    {% empty %}
+      <li class="list-group-item">No devices found.</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

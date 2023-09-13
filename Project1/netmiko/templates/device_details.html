@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+  <h1 class="mt-5">{{ device.name }} Details</h1>
+  <p>IP Address: {{ device.ip_address }}</p>
+  <p>Username: {{ device.username }}</p>
+  
+
+  <h2>Configurations:</h2>
+  <ul class="list-group">
+    {% for configuration in configurations %}
+      <li class="list-group-item">{{ configuration.config_details }}</li>
+    {% empty %}
+      <li class="list-group-item">No configurations found.</li>
+    {% endfor %}
+  </ul>
+
+  <a class="btn btn-primary mt-3" href="{% url 'netmiko:device_update' device_id=device.id %}">Edit Device</a>
+  <a class="btn btn-primary mt-3" href="{% url 'netmiko:add_configuration' device_id=device.id %}">Add Configuration</a>
+  <form class="d-inline" method="post" action="{% url 'netmiko:device_delete' device_id=device.id %}">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger mt-3" onclick="return confirm('Are you sure you want to delete this device?')">Delete Device</button>
+  </form>
+</div>
+{% endblock %}

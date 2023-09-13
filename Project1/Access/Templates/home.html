@@ -1,0 +1,171 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row">
+      <div class="col-md-2" style="position: sticky; top: 0;">
+        <div class="container">
+          <div class="input-group mb-3 mt-3">
+            <input type="text" class="form-control rounded" name="query" placeholder="Search devices..." aria-label="Search" aria-describedby="search-addon" />
+            <div class="input-group-append">
+              <button type="submit" class="btn btn-outline-primary">Search</button>
+            </div>
+          </div>
+          <div class="overflow-auto" style="height: calc(100vh - 150px); overflow: auto;">
+            <ul class="nav flex-column">
+              <li class="nav-item">
+                <a class="nav-link active" href="{% url 'netmiko:device_list' %}">Device List</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'netmiko:device_health' %}">Device Health</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Menu Item 3</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    
+    <div class="col-md-10">
+      <h1 style="text-align: center">Welcome to the Dashboard</h1>
+
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title" style="text-align: center">Summary Statistics</h5>
+          <p class="card-text">Number of Devices: {{ num_devices }}</p>
+          <p class="card-text">Total Alerts: {{ num_alerts }}</p>
+        </div>
+      </div>
+
+      <div class="row mt-4">
+        <div class="col-md-6">
+          <div class="card h-100">
+            <div class="card-body">
+              <h5 class="card-title" style="text-align: center">Latest Alerts</h5>
+              <p class="card-text">Total Alerts: {{ num_alerts }}</p>
+              {% include 'alerts.html' %}
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="card h-100">
+            <div class="card-body">
+              <h5 class="card-title" style="text-align: center">Alerts Distribution</h5>
+              <canvas id="alertChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-4">
+        <div class="col-md-6">
+          <div class="card h-100">
+            <div class="card-body">
+              <h5 class="card-title" style="text-align: center">User Activity Log</h5>
+              <ul>
+                <li>User Aakrit logged in at 10:00 AM.</li>
+                <li>User Aakrit added a new device at 11:30 AM.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="card h-100">
+            <div class="card-body">
+              <h5 class="card-title" style="text-align: center">Devices by Platform</h5>
+              <canvas id="platformChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-4">
+        <div class="col-md-6">
+          <div class="card h-100">
+            <div class="card-body">
+              <h5 class="card-title" style="text-align: center">Scheduled Tasks</h5>
+              <ul>
+                <li>Need to create a view for the above use activity log</li>
+                <li>Need to create add_config view using pyATS</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="card h-100">
+            <div class="card-body">
+              <h5 class="card-title" style="text-align: center">Something to be added</h5>
+              <canvas id="platformChart"></canvas>
+            </div>
+          </div>
+        </div>
+        
+
+        <!-- for more cards -->
+
+      </div>
+
+    </div>
+    <div class="pagination mt-3">
+      <span class="step-links">
+          {% if alerts.has_previous %}
+              <a href="?page=1">&laquo; first</a>
+              <a href="?page={{ alerts.previous_page_number }}">previous</a>
+          {% endif %}
+    
+          <span class="current">
+              Page {{ alerts.number }} of {{ alerts.paginator.num_pages }}.
+          </span>
+    
+          {% if alerts.has_next %}
+              <a href="?page={{ alerts.next_page_number }}">next</a>
+              <a href="?page={{ alerts.paginator.num_pages }}">last &raquo;</a>
+          {% endif %}
+      </span>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+<script>
+  const platformData = {
+    labels: ['Cisco', 'Juniper', 'Huawei'],
+    datasets: [{
+      label: 'Devices by Platform',
+      data: [25, 15, 10],
+      backgroundColor: ['#0d6efd', '#198754', '#0dcaf0'],
+    }]
+  };
+
+  const alertsData = {
+    labels: ['Critical', 'Warning', 'Info'],
+    datasets: [{
+      label: 'Alerts Distribution',
+      data: [8, 20, 12],
+      backgroundColor: ['#0d6efd', '#198754', '#0dcaf0'],
+    }]
+  };
+
+
+  const platformChart = new Chart(document.getElementById('platformChart'), {
+    type: 'bar',
+    data: platformData,
+    options: {
+      legend: {
+        display: false,
+      },
+    },
+  });
+
+  const alertChart = new Chart(document.getElementById('alertChart'), {
+    type: 'pie',
+    data: alertsData,
+  });
+
+</script>
+{% endblock %}
